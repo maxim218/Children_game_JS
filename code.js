@@ -5,6 +5,7 @@ window.onload = function () {
     let startBtn = document.getElementById("startBtn");
     let pauseBtn = document.getElementById("pauseBtn");
     let can = document.getElementById("can");
+    let scoreLabel = document.getElementById("scoreLabel");
 
     // init drawing holst
     let holst = can.getContext("2d");
@@ -117,6 +118,7 @@ window.onload = function () {
         let enemy = {
             xx: positionX,
             yy: positionY,
+            dead: false,
         };
         arr.push(enemy);
         positionY -= 70;
@@ -125,8 +127,37 @@ window.onload = function () {
     // move to down size all enemies and draw them
     function moveAndDrawAllEnemies() {
         for(let i = 0; i < size; i++) {
-            arr[i].yy += 4;
-            drawEnemy(arr[i].xx, arr[i].yy);
+            if(arr[i].yy < 560) {
+                arr[i].yy += 5;
+            }
+            if(arr[i].dead === false) {
+                drawEnemy(arr[i].xx, arr[i].yy);
+            }
+        }
+    }
+
+    // score of hero
+    let score = 0;
+
+    // print score
+    scoreLabel.innerHTML = "Очки: " + score;
+
+    // control hitTest enemies with hero
+    function controlHitTest() {
+        let hero_xc = xx + 50;
+        let hero_yc = yy + 25;
+        for(let i = 0; i < size; i++) {
+            let enemy_xc = arr[i].xx + 50;
+            let enemy_yc = arr[i].yy + 25;
+            if(arr[i].dead === false) {
+                if (Math.abs(hero_xc - enemy_xc) < 100) {
+                    if (Math.abs(hero_yc - enemy_yc) < 50) {
+                        arr[i].dead = true;
+                        score++;
+                        scoreLabel.innerHTML = "Очки: " + score;
+                    }
+                }
+            }
         }
     }
 
@@ -137,5 +168,6 @@ window.onload = function () {
         drawLine(0, 550, 800, 550);
         drawHero();
         moveAndDrawAllEnemies();
+        controlHitTest();
     }, 50);
 };
