@@ -2,7 +2,6 @@
 
 window.onload = function () {
     // get elements from html page
-    let startBtn = document.getElementById("startBtn");
     let pauseBtn = document.getElementById("pauseBtn");
     let can = document.getElementById("can");
     let scoreLabel = document.getElementById("scoreLabel");
@@ -161,13 +160,29 @@ window.onload = function () {
         }
     }
 
+    // pause variable
+    let pause = false;
+
+    // pause btn click
+    pauseBtn.onclick = function() {
+        pause = !pause;
+        if(pause === true) {
+            can.style.opacity = 0.5;
+        }
+        if(pause === false) {
+            can.style.opacity = 1.0;
+        }
+    };
+
     // repeating function
     let timeWorker = setInterval(function() {
-        moveHero();
-        drawFon();
-        drawLine(0, 550, 800, 550);
-        drawHero();
-        moveAndDrawAllEnemies();
-        controlHitTest();
+        if(pause === false) {
+            moveHero();
+            drawFon();
+            drawLine(0, 550, 800, 550);
+            drawHero();
+            moveAndDrawAllEnemies();
+            controlHitTest();
+        }
     }, 50);
 };
