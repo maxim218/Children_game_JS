@@ -174,15 +174,35 @@ window.onload = function () {
         }
     };
 
+    // control is game finished
+    function isGameFinished() {
+        let count = 0;
+        for(let i = 0; i < size; i++) {
+            if(arr[i].yy >= 555) {
+                count++;
+            }
+        }
+        if(count === 50) {
+            return true;
+        }
+        return false;
+    }
+
     // repeating function
     let timeWorker = setInterval(function() {
-        if(pause === false) {
-            moveHero();
-            drawFon();
-            drawLine(0, 550, 800, 550);
-            drawHero();
-            moveAndDrawAllEnemies();
-            controlHitTest();
+        let gameFinished = isGameFinished();
+        if(gameFinished === false) {
+            if (pause === false) {
+                moveHero();
+                drawFon();
+                drawLine(0, 550, 800, 550);
+                drawHero();
+                moveAndDrawAllEnemies();
+                controlHitTest();
+            }
+        } else {
+            clearInterval(timeWorker);
+            alert("Результат игры: " + score + " / 50");
         }
     }, 50);
 };
