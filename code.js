@@ -16,7 +16,6 @@ window.onload = function () {
         holst.fillRect(0, 0, 800, 600);
     }
 
-    // draw background in holst
     drawFon();
 
     // left and right
@@ -45,8 +44,38 @@ window.onload = function () {
         }
     };
 
+
+    // hero position
+    let xx = 350;
+    let yy = 500;
+
+    // draw hero function
+    function drawHero() {
+        holst.strokeStyle = "#3c16ff";
+        holst.lineWidth = 2;
+        holst.strokeRect(xx, yy, 100, 50);
+    }
+
+    drawHero();
+
+    // move hero function
+    function moveHero() {
+        if(a === true) {
+            if(xx !== 0) {
+                xx -= 10;
+            }
+        }
+        if(d === true) {
+            if(xx !== 700) {
+                xx += 10;
+            }
+        }
+    }
+
     // repeating function
     let timeWorker = setInterval(function() {
-
+        moveHero();
+        drawFon();
+        drawHero();
     }, 50);
 };
