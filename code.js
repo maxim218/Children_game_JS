@@ -12,7 +12,7 @@ window.onload = function () {
     // draw background in holst
     function drawFon() {
         holst.clearRect(0, 0, 800, 600);
-        holst.fillStyle = '#269dff';
+        holst.fillStyle = '#2F4F4F';
         holst.fillRect(0, 0, 800, 600);
     }
 
@@ -64,7 +64,7 @@ window.onload = function () {
 
     // draw hero function
     function drawHero() {
-        holst.strokeStyle = "#3c16ff";
+        holst.strokeStyle = "#FF6347";
         holst.lineWidth = 2;
         holst.strokeRect(xx, yy, 100, 50);
     }
@@ -105,7 +105,7 @@ window.onload = function () {
 
     // function drawEnemy
     function drawEnemy(x_enemy, y_enemy) {
-        holst.strokeStyle = "#40ff63";
+        holst.strokeStyle = "#ADFF2F";
         holst.lineWidth = 2;
         holst.strokeRect(x_enemy, y_enemy, 100, 50);
     }
