@@ -17,24 +17,22 @@ window.onload = function () {
     }
 
     drawFon();
+	
+	//draw cyrcle (x1, y1 - centre)
+	function drawCyrcle(x1, y1, R, color="#00FF00") {
+		holst.lineWidth = 2;
+        holst.strokeStyle = color;
+		holst.beginPath();
+		holst.arc(x1,y1,R,0,Math.PI*2,true); // Внешняя окружность
+		holst.stroke();
+	}
 
-    // draw one line
-    function drawLine(x1, y1, x2, y2) {
-        holst.lineWidth = 2;
-        holst.strokeStyle = "#FF0000";
-        holst.beginPath();
-        holst.moveTo(x1, y1);
-        holst.lineTo(x2, y2);
-        holst.closePath();
-        holst.stroke();
-    }
-
-    drawLine(0, 550, 800, 550);
-
-    // left and right
+	// left and right, up and down
     let a = false;
     let d = false;
-
+	let w = false;
+	let s = false;
+	
     // event of key down
     window.onkeydown = function (event) {
         let keyNumber = event.keyCode;
@@ -44,9 +42,15 @@ window.onload = function () {
         if(keyNumber === 68) {
             d = true;
         }
+		if(keyNumber === 87) {
+            w = true;
+        }
+        if(keyNumber === 83) {
+            s = true;
+        }
     };
-
-    // event of key up
+	
+	// event of key up
     window.onkeyup = function (event) {
         let keyNumber = event.keyCode;
         if(keyNumber === 65) {
@@ -55,37 +59,15 @@ window.onload = function () {
         if(keyNumber === 68) {
             d = false;
         }
+		if(keyNumber === 87) {
+            w = false;
+        }
+        if(keyNumber === 83) {
+            s = false;
+        }
     };
-
-
-    // hero position
-    let xx = 350;
-    let yy = 500;
-
-    // draw hero function
-    function drawHero() {
-        holst.strokeStyle = "#FF6347";
-        holst.lineWidth = 2;
-        holst.strokeRect(xx, yy, 100, 50);
-    }
-
-    drawHero();
-
-    // move hero function
-    function moveHero() {
-        if(a === true) {
-            if(xx !== 0) {
-                xx -= 10;
-            }
-        }
-        if(d === true) {
-            if(xx !== 700) {
-                xx += 10;
-            }
-        }
-    }
-
-    // get random number
+	
+	// get random number
     function getRandomNumber(k) {
         let r = Math.random();
         let m = r * 10000;
@@ -94,43 +76,91 @@ window.onload = function () {
         return result;
     }
 
+	////////////////////////////////////////////////
+
     // create empty array
     let arr = [];
 
     // array size
     let size = 50;
+	
+	// enemy radius
+	let enemyRadius = 35;
 
-    // y position of enemy for creating
-    let positionY = -50;
-
-    // function drawEnemy
-    function drawEnemy(x_enemy, y_enemy) {
-        holst.strokeStyle = "#ADFF2F";
-        holst.lineWidth = 2;
-        holst.strokeRect(x_enemy, y_enemy, 100, 50);
+	// function drawEnemy
+    function drawEnemy(x_enemy, y_enemy, R) {
+        drawCyrcle(x_enemy, y_enemy, R);
     }
 
     // push elements to array
     for(let i = 0; i < size; i++) {
-        let randomValue = getRandomNumber(8);
-        let positionX = randomValue * 100;
+        let randomValue = getRandomNumber(16);
+        let positionX = 30 + randomValue * 50;
+		randomValue = getRandomNumber(12);
+		let positionY = randomValue * 50;
         let enemy = {
             xx: positionX,
             yy: positionY,
+			R: enemyRadius,
             dead: false,
         };
         arr.push(enemy);
-        positionY -= 70;
     }
 
     // move to down size all enemies and draw them
     function moveAndDrawAllEnemies() {
         for(let i = 0; i < size; i++) {
-            if(arr[i].yy < 560) {
+			/* drawEnemy(arr[i].xx, arr[i].yy); */
+            /* if(arr[i].yy < 600 - (heroRadius + heroSpeed)) {
                 arr[i].yy += 5;
-            }
+            } */
             if(arr[i].dead === false) {
-                drawEnemy(arr[i].xx, arr[i].yy);
+                drawEnemy(arr[i].xx, arr[i].yy, arr[i].R);
+				arr[i].R -= 0.5;
+				if (arr[i].R < 0) {
+					arr[i].dead = true;
+				}
+            }
+        }
+    }
+	////////////////////////////////////////////////
+	
+	// hero position
+    let xx = 400;
+    let yy = 300;
+	
+	let heroRadius = 15;
+	
+	let heroSpeed = 5;
+
+    // draw hero function
+    function drawHero() {
+        let color = "#FF6347";
+        drawCyrcle(xx,yy,heroRadius,color);
+    }
+
+    drawHero();
+	
+	// move hero function
+    function moveHero() {
+        if(a === true) {
+            if(xx >= heroRadius + heroSpeed) {
+                xx -= heroSpeed;
+            }
+        }
+        if(d === true) {
+            if(xx <= 800 - (heroRadius + heroSpeed)) {
+                xx += heroSpeed;
+            }
+        }
+		if(w === true) {
+            if(yy >= heroRadius + heroSpeed) {
+                yy -= heroSpeed;
+            }
+        }
+        if(s === true) {
+            if(yy <= 600 - (heroRadius + heroSpeed)) {
+                yy += heroSpeed;
             }
         }
     }
@@ -143,22 +173,26 @@ window.onload = function () {
 
     // control hitTest enemies with hero
     function controlHitTest() {
-        let hero_xc = xx + 50;
-        let hero_yc = yy + 25;
         for(let i = 0; i < size; i++) {
-            let enemy_xc = arr[i].xx + 50;
-            let enemy_yc = arr[i].yy + 25;
+            let distance_x = Math.abs(arr[i].xx - xx);
+            let distance_y = Math.abs(arr[i].yy - yy);
+            let distance_hit_ok = arr[i].R + heroRadius;
             if(arr[i].dead === false) {
-                if (Math.abs(hero_xc - enemy_xc) < 100) {
-                    if (Math.abs(hero_yc - enemy_yc) < 50) {
+                if (distance_x <= distance_hit_ok) {
+                    if (distance_y <= distance_hit_ok) {
+                        let bonus_radius = Math.abs(enemyRadius - arr[i].R);
                         arr[i].dead = true;
                         score++;
                         scoreLabel.innerHTML = "Очки: " + score;
+                        for(let i = 0; i < size; i++) {
+                            arr[i].R += bonus_radius;
+                        }
                     }
                 }
             }
         }
     }
+
 
     // pause variable
     let pause = false;
@@ -173,31 +207,29 @@ window.onload = function () {
             can.style.opacity = 1.0;
         }
     };
-
-    // control is game finished
-    function isGameFinished() {
-        let count = 0;
-        for(let i = 0; i < size; i++) {
-            if(arr[i].yy >= 555) {
-                count++;
+	
+	function isGameFinished() {
+	    let count = 0;
+		for (let i = 0; i < size; i++) {
+		    if (arr[i].dead) {
+		        count++;
             }
         }
-        if(count === 50) {
-            return true;
+        if (count === 50) {
+		    return true;
         }
         return false;
-    }
-
-    // repeating function
+	}
+	
+	// repeating function
     let timeWorker = setInterval(function() {
         let gameFinished = isGameFinished();
         if(gameFinished === false) {
             if (pause === false) {
-                moveHero();
                 drawFon();
-                drawLine(0, 550, 800, 550);
+				moveHero();
                 drawHero();
-                moveAndDrawAllEnemies();
+				moveAndDrawAllEnemies();
                 controlHitTest();
             }
         } else {
