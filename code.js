@@ -110,10 +110,6 @@ window.onload = function () {
     // move to down size all enemies and draw them
     function moveAndDrawAllEnemies() {
         for(let i = 0; i < size; i++) {
-			/* drawEnemy(arr[i].xx, arr[i].yy); */
-            /* if(arr[i].yy < 600 - (heroRadius + heroSpeed)) {
-                arr[i].yy += 5;
-            } */
             if(arr[i].dead === false) {
                 drawEnemy(arr[i].xx, arr[i].yy, arr[i].R);
 				arr[i].R -= 0.5;
