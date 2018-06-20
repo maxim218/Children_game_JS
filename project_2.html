@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Массивы</title>
+</head>
+<body>
+
+<p>Введите целые числа</p>
+<input type = "text" id = "xxx">
+<button id = "bbb">Получить ответ</button>
+
+<script>
+	window.onload = function() {
+		let btn = document.getElementById("bbb");
+		btn.onclick = function() {
+			let field = document.getElementById("xxx");
+			let value = field.value;
+			let arr = [];
+			arr = value.split(" ");
+			alert(arr.length);
+		};
+	};
+</script>
+
+</body>
+</html>
